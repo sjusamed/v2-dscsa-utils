@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { supabase } from './utils/supabaseClient'
 import Login from './components/Login.vue'
+import ResetPassword from './components/ResetPassword.vue'
 import Scanner from './components/Scanner.vue'
 import Partners from './components/Partners.vue'
 import Products from './components/Products.vue'
@@ -9,6 +10,7 @@ import Products from './components/Products.vue'
 const currentView = ref('scanner')
 const user = ref(null)
 const loading = ref(true)
+const showPasswordReset = ref(false)
 
 const views = {
   scanner: { component: Scanner, title: 'Scan Items' },
@@ -23,8 +25,13 @@ onMounted(async () => {
   loading.value = false
 
   // Listen for auth changes
-  supabase.auth.onAuthStateChange((_event, session) => {
+  supabase.auth.onAuthStateChange((event, session) => {
     user.value = session?.user ?? null
+
+    // Show password reset form when user arrives via password recovery link
+    if (event === 'PASSWORD_RECOVERY') {
+      showPasswordReset.value = true
+    }
   })
 })
 
@@ -43,6 +50,10 @@ async function handleLogout() {
   await supabase.auth.signOut()
   user.value = null
 }
+
+function handlePasswordResetComplete() {
+  showPasswordReset.value = false
+}
 </script>
 
 <template>
@@ -53,6 +64,9 @@ async function handleLogout() {
       <p class="mt-4 text-gray-600">Loading...</p>
     </div>
   </div>
+
+  <!-- Password Reset Screen -->
+  <ResetPassword v-else-if="showPasswordReset" @complete="handlePasswordResetComplete" />
 
   <!-- Login Screen -->
   <Login v-else-if="!user" @login="handleLogin" />
