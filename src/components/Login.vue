@@ -48,9 +48,8 @@ async function handleForgotPassword() {
   message.value = null
 
   try {
-    const { error: resetError } = await supabase.auth.resetPasswordForEmail(email.value, {
-      redirectTo: `${window.location.origin}/`
-    })
+    // Use current origin, but Supabase will use the Site URL configured in dashboard
+    const { error: resetError } = await supabase.auth.resetPasswordForEmail(email.value)
 
     if (resetError) throw resetError
 

@@ -12,14 +12,29 @@ This guide will help you set up invite-only authentication for the DSCSA Web Sca
    - This prevents random users from creating accounts
    - Only invited users can log in
 
-## 2. Configure Email Settings (Optional but Recommended)
+## 2. Configure Site URL (IMPORTANT)
+
+1. In **Authentication** → **Settings**
+2. Scroll to **Site URL**
+3. Set it to your production URL:
+   - For Vercel: `https://your-app-name.vercel.app`
+   - For development: `http://localhost:5174`
+   - **Note:** You can add multiple URLs in "Redirect URLs" section below
+4. **Add Redirect URLs** (same section):
+   - Add your production URL: `https://your-app-name.vercel.app/**`
+   - Add localhost for dev: `http://localhost:5174/**`
+   - The `**` allows all routes
+
+This ensures password reset emails redirect to the correct URL.
+
+## 3. Configure Email Settings (Optional but Recommended)
 
 1. In **Authentication** → **Settings**
 2. Scroll to **SMTP Settings**
 3. Configure your email provider (or use Supabase's default)
 4. This allows password reset emails to work
 
-## 3. Invite Your First User
+## 4. Invite Your First User
 
 ### Method 1: Supabase Dashboard (Recommended)
 
@@ -52,7 +67,7 @@ INSERT INTO auth.users (
 
 **Note:** User will need to use "Forgot Password" to set a secure password.
 
-## 4. Update RLS Policies (Security)
+## 5. Update RLS Policies (Security)
 
 Now that we have authentication, let's secure the database tables:
 
@@ -90,14 +105,14 @@ CREATE POLICY "Authenticated users can delete products" ON products
 
 Run this in **SQL Editor** to update security policies.
 
-## 5. Test the Authentication
+## 6. Test the Authentication
 
 1. Deploy your app (or run locally)
 2. You should see a login screen
 3. Try logging in with an invited user
 4. Verify you can access the app after login
 
-## 6. Managing Users
+## 7. Managing Users
 
 ### Invite New Users
 1. **Authentication** → **Users** → **Invite User**
@@ -114,7 +129,7 @@ Run this in **SQL Editor** to update security policies.
 1. User clicks **"Forgot Password"** on login screen
 2. OR you can trigger it from **Authentication** → **Users** → **"..."** → **Send Password Reset Email**
 
-## 7. Email Templates (Optional Customization)
+## 8. Email Templates (Optional Customization)
 
 Customize the invitation and password reset emails:
 
